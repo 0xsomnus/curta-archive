@@ -116,11 +116,12 @@ contract Curta is ICurta, FlagsERC721, Owned {
         // Revert if the puzzle does not exist.
         if (address(puzzle) == address(0)) revert PuzzleDoesNotExist(_puzzleId);
 
-        // Revert if submissions are closed.
+        // Revert if submissions are closed. We comment out the revert statement to enable
+        // players to work on multiple puzzles at once without worrying about time.
         uint40 firstSolveTimestamp = puzzleData.firstSolveTimestamp;
         uint40 solveTimestamp = uint40(block.timestamp);
         uint8 phase = _computePhase(firstSolveTimestamp, solveTimestamp);
-        if (phase == 3) revert SubmissionClosed(_puzzleId);
+        // if (phase == 3) revert SubmissionClosed(_puzzleId);
 
         // Revert if the solution is incorrect.
         if (!puzzle.verify(puzzle.generate(msg.sender), _solution)) {
@@ -139,7 +140,7 @@ contract Curta is ICurta, FlagsERC721, Owned {
         // Mark the puzzle as solved.
         hasSolvedPuzzle[msg.sender][_puzzleId] = true;
 
-        uint256 ethRemaining = msg.value;
+        // uint256 ethRemaining = msg.value;
         unchecked {
             // Mint NFT.
             _mint({
@@ -154,20 +155,20 @@ contract Curta is ICurta, FlagsERC721, Owned {
             } else if (phase == 2) {
                 // Revert if the puzzle is in Phase 2, and insufficient funds
                 // were sent.
-                if (ethRemaining < PHASE_TWO_MINIMUM_FEE) revert InsufficientFunds();
+                // if (ethRemaining < PHASE_TWO_MINIMUM_FEE) revert InsufficientFunds();
                 ++getPuzzleColorsAndSolves[_puzzleId].phase2Solves;
 
                 // Transfer protocol fee to `owner`.
-                SafeTransferLib.safeTransferETH(owner, PHASE_TWO_PROTOCOL_FEE);
+                // SafeTransferLib.safeTransferETH(owner, PHASE_TWO_PROTOCOL_FEE);
 
                 // Subtract protocol fee from total value.
-                ethRemaining -= PHASE_TWO_PROTOCOL_FEE;
+                // ethRemaining -= PHASE_TWO_PROTOCOL_FEE;
             }
         }
 
         // Transfer untransferred funds to the puzzle author. Refunds are not
         // checked, in case someone wants to ``tip'' the author.
-        SafeTransferLib.safeTransferETH(getPuzzleAuthor[_puzzleId], ethRemaining);
+        // SafeTransferLib.safeTransferETH(getPuzzleAuthor[_puzzleId], ethRemaining);
 
         // Emit event
         emit SolvePuzzle({ id: _puzzleId, solver: msg.sender, solution: _solution, phase: phase });
@@ -179,10 +180,10 @@ contract Curta is ICurta, FlagsERC721, Owned {
         if (msg.sender != authorshipToken.ownerOf(_tokenId)) revert Unauthorized();
 
         // Revert if the puzzle has already been used.
-        if (hasUsedAuthorshipToken[_tokenId]) revert AuthorshipTokenAlreadyUsed(_tokenId);
+        // if (hasUsedAuthorshipToken[_tokenId]) revert AuthorshipTokenAlreadyUsed(_tokenId);
 
         // Mark token as used.
-        hasUsedAuthorshipToken[_tokenId] = true;
+        // hasUsedAuthorshipToken[_tokenId] = true;
 
         unchecked {
             uint32 curPuzzleId = ++puzzleId;
