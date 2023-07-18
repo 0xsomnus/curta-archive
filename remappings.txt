@@ -1,6 +1,7 @@
 colormap-registry/=lib/colormap-registry/src/
 forge-std/=lib/forge-std/src/
 solady/=lib/solady/src/
+foundry-huff/=lib/foundry-huff/src/
 shields-api/=lib/shields-api-contract/contracts/
 solmate/=lib/solmate/src/
 @/script/=script/
