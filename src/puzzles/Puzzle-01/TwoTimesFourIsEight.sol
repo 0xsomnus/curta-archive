@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.17;
 
-import "@/contracts/interfaces/IPuzzle.sol";
+import {IPuzzle} from "@/contracts/interfaces/IPuzzle.sol";
 
 /// @title 2 × 4 = 8
 /// @custom:subtitle Sodoku
