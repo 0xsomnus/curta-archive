@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import { DeployBase } from "./DeployBase.s.sol";
 
 /// @notice A script to deploy the protocol on mainnet.
-contract DeployMainnet is DeployBase {
+contract DeployFork is DeployBase {
 
     /// @notice The address to transfer the ownership of the Authorship Token
     /// to.

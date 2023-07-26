@@ -1,170 +1,47 @@
-<img align="right" width="150" height="150" top="100" src="./assets/curta.png">
+# Curta Archive
 
-# Curta
-[**Website**](https://curta.wtf) - [**Docs**](https://curta.wtf/docs) - [**Twitter**](https://twitter.com/curta_wtf)
+Curta archive is a suite of helper scripts and contracts enabling users to play and solve Curta puzzles regardless of whether submissions are open or closed on mainnet.
 
-A CTF protocol, where players create and solve EVM puzzles to earn NFTs.
+It is designed to be used on a local mainnet fork and all the modifications to the original code are made with that assumption in mind. We use a mainnet fork rather than an empty anvil testnet for compatibility with puzzles that use external contracts deployed on mainnet.
 
-The goal of players is to view the source code of the puzzle, interpret the code, solve it as if it was a regular puzzle, then verify the solution on-chain. If the solution is valid, a **Flag Token** with the corresponding metadata will be minted to their address.
+## Changes
+| File | Changes | Rationale |
+|  -------- | ------- | ---- |
+| Curta.sol| Removed limit on puzzle addition for Authorship tokens | Eliminates redundancy since only individual user will add puzzles locally |
+|          | Removed Author + Protocol fee logic + Author tipping   | Redundant, see above |
+|          | Removed Phase 3 submission reverts                     | Redundant, the point of this suite is to enable players to solve puzzles without worrying about time constraints. Removing the reverts enables users to simultaneously deploy puzzles of their choosing without worry of time for either over sequentially deploying each puzzle |
+| Multiple contracts | Added past puzzles and deploy scripts | See description of codebase |
+| foundry.toml | Added auto_detect_solc | Though this is against best practice, this flag was set since a few puzzles are compiled with higher solc versions |
 
-Since puzzles are on-chain, everyone can view everyone else's submissions. The generative aspect prevents front-running and allows for multiple winners: even if players view someone else's solution, they still have to figure out what the rules/constraints of the puzzle are and apply the solution to their respective starting position.
+## Setup
 
-## Deployments
+1. Install foundry first, if you haven't already then clone this repo and install it's dependencies via the following command
 
-<table>
-    <thead>
-        <tr>
-            <th>Chain</th>
-            <th>Chain ID</th>
-            <th>Contract</th>
-            <th>Address</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan="3">Mainnet</td>
-            <td rowspan="3">1</td>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/Curta.sol">Curta</a></code></td>
-            <td><code><a href="https://etherscan.io/address/0x0000000006bC8D9e5e9d436217B88De704a9F307">0x0000000006bC8D9e5e9d436217B88De704a9F307</code></td>
-        </tr>
-        <tr>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/AuthorshipToken.sol">AuthorshipToken</a></code></td>
-            <td><code><a href="https://etherscan.io/address/0xC0ffeEb30F5aAA18Cd0a799F6dA1bdcb46f63C44">0xC0ffeEb30F5aAA18Cd0a799F6dA1bdcb46f63C44</code></td>
-        </tr>
-        <tr>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/FlagRenderer.sol">FlagRenderer</a></code></td>
-            <td><code><a href="https://etherscan.io/address/0xf1a9000013303D5641f887C8E1b08D8D60101846">0xf1a9000013303D5641f887C8E1b08D8D60101846</code></td>
-        </tr>
-        <tr>
-            <td rowspan="3">Goerli</td>
-            <td rowspan="3">5</td>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/Curta.sol">Curta</a></code></td>
-            <td><code><a href="https://goerli.etherscan.io/address/0x00000000eCf2b58C296B47caC8C51467c0e307cE">0x00000000eCf2b58C296B47caC8C51467c0e307cE</code></td>
-        </tr>
-        <tr>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/AuthorshipToken.sol">AuthorshipToken</a></code></td>
-            <td><code><a href="https://goerli.etherscan.io/address/0xC0fFeEe59157d2dd0Ee70d4FABaBCa349b319203">0xC0fFeEe59157d2dd0Ee70d4FABaBCa349b319203</code></td>
-        </tr>
-        <tr>
-            <td><code><a href="https://github.com/waterfall-mkt/curta/blob/main/src/FlagRenderer.sol">FlagRenderer</a></code></td>
-            <td><code><a href="https://goerli.etherscan.io/address/0xf1a9000013303D5641f887C8E1b08D8D60101846">0xf1a9000013303D5641f887C8E1b08D8D60101846</code></td>
-        </tr>
-    </tbody>
-<table>
+    `$ forge install`
 
-## Usage
-This project uses [**Foundry**](https://github.com/foundry-rs/foundry) as its development/testing framework and a [**Constellation**](https://constellation.so/) roll-up for testing.
+2. Next, you'll need to install the [huff compiler](https://github.com/huff-language/huff-rs) as it's needed to deploy challenges written in huff.
 
-### Installation
+3. Clone this repo
 
-First, make sure you have Foundry installed. Then, run the following commands to clone the repo and install its dependencies:
-```sh
-git clone https://github.com/waterfall-mkt/curta.git
-cd curta
-forge install
-```
+NB: Though we're running this on a mainnet fork, we deploy our own Curta instance for a clean state over using the instance present in the fork. Though you can use
+this already deployed instance through the `vm.prank()` and `vm.warp()`(can also use --fork-url-block-number) to impersonate other accounts or set the timestamp to before the puzzle closed, this quickly gets more and more complex as more puzzles are added since you need to figure out the time to warp to. Our approach is much simpler in comparison.
 
-### Testing
-To run tests, run the following command:
-```sh
-forge test
-```
+4. Create a .env file at the root of the repo with the contents of .env.example and replace the variables with those you intend to use.
 
-If you'd like to test on a mainnet fork or view a sample [`AuthorshipToken.tokenURI`](https://github.com/waterfall-mkt/curta/blob/main/src/AuthorshipToken.sol) output, run the following command:
-```sh
-forge test -f mainnet -vvv
-```
+> **NB**: You will need to spin up two new, DIFFERENT accounts for `AUTHORSHIP_TOKEN_PRIVATE_KEY` and `CURTA_PRIVATE_KEY` i.e with zero transactions sent(nonce of 0) otherwise the scripts will fail due to incorrect address pre-computation. Unfortunately, you cannot use the accounts auto-generated by Anvil as they have non-zero nonces.
 
-Alternatively, to test the metadata output, follow the instructions in [`PrintAuthorshipTokenScript`](https://github.com/waterfall-mkt/curta/blob/main/script/PrintAuthorshipToken.s.sol), and run the following command:
-```sh
-forge script script/PrintAuthorshipToken.s.sol:PrintAuthorshipTokenScript -f mainnet -vvv
-```
+5. Configure DeployFork.s.sol with the account you intend to use. This is optional as you can just use `vm.prank()` and related cheatcodes to impersonate the accounts already present in the script. Just be sure you're interacting with the contracts you've deployed rather than the instances from the mainnet network state. You don't need to add your address multiple times to the `AUTHORS` array since the puzzle addition limit is not present in this suite.
 
-### Coverage
-To view coverage, run the following command:
-```sh
-forge coverage
-```
+6. Fork mainnet via anvil with an rpc url using the below command. You can get one from various providers, infura and alchemy come to mind. Please this [website](https://chainlist.org/chain/1) for a list of public rpc urls and take your pick.
 
-To generate a report, run the following command:
-```sh
-forge coverage --report lcov
-```
+    `$ anvil --fork-url <rpc-url>`
 
-> **Note**
-> It may be helpful to use an extension like [**Coverage Gutters**](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) to display the coverage over the code.
+7. Deploy the main contracts (Curta, AuthorshipToken, FlagRenderer, FlagsERC721) via DeployFork.s.sol and note down the addresses output.
 
-### Snapshot
-To obtain the same `.gas-snapshot` output as the CI tests, copy [`.env.example`](https://github.com/waterfall-mkt/curta/blob/main/.env.example) into your `.env` file, and run the following command:
-```
-forge snapshot
-```
+    `$ forge script script/deploy/DeployFork.s.sol:DeployFork`
 
-### Deploying
-#### 1. Set environment variables
-Create a file named `.env` at the root of the project and copy the contents of `.env.example` into it. Then, fill out each of the variables:
-<table>
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th>Variable</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan="3">Deploy script configuration</td>
-            <td><code>DEPLOYER_PRIVATE_KEY</code></td>
-            <td>The account to deploy an instance of <code>FlagRenderer</code> and fund each account below with 0.25 ETH each to deploy the protocol</td>
-        </tr>
-        <tr>
-            <td><code>AUTHORSHIP_TOKEN_PRIVATE_KEY</code></td>
-            <td>The account to deploy <code>AuthorshipToken</code></td>
-        </tr>
-        <tr>
-            <td><code>CURTA_PRIVATE_KEY</code></td>
-            <td>The account to deploy <code>Curta</code></td>
-        </tr>
-        <tr>
-            <td rowspan="3">RPC endpoints</td>
-            <td><code>RPC_URL_CONSTELLATION</code></td>
-            <td>An RPC endpoint for the Constellation chain</td>
-        </tr>
-        <tr>
-            <td><code>RPC_URL_GOERLI</code></td>
-            <td>An RPC endpoint for Goerli</td>
-        </tr>
-        <tr>
-            <td><code>RPC_URL_MAINNET</code></td>
-            <td>An RPC endpoint for mainnet</td>
-        </tr>
-        <tr>
-            <td rowspan="1">API keys</td>
-            <td><code>ETHERSCAN_KEY</code></td>
-            <td>An <a href="https://etherscan.io" target="_blank" rel="noreferrer noopener"><b>Etherscan</b></a> API key for verifying contracts</td>
-        </tr>
-    </tbody>
-<table>
+Deploy the curta puzzle instances. Run `DeployPuzzleFork.s.sol` to deploy them all simultaneously or run the scripts individually depending on your preference. Since the time limits and ether requirements for solving a puzzle are removed, deploying them simultaneously has no drawbacks.
 
-> **Warning**
-> If accounts specified by `AUTHORSHIP_TOKEN_PRIVATE_KEY` or `CURTA_PRIVATE_KEY` have a nonzero account nonce (i.e. they have sent transactions) or are equal, the deploy script will most likely fail due to incorrect contract address precomputation (the script assumes each account has a nonce of 0).
+## Contributing
 
-> **Note**
-> The reason the addresses are precomputed are because `AuthorshipToken` and `Curta` must know each other's addresses when being deployed. Also, it allows for vanity addresses :).
-
-#### 2. Run commands to run deploy scripts
-If you are deploying to a public chain, replace `DeployMainnet` and `mainnet` with your desired chain and run the following commands:
-```sh
-forge script script/deploy/DeployMainnet.s.sol:DeployMainnet -f mainnet --broadcast --verify
-```
-
-If you are deploying to the Constellation roll-up, remove `--verify` and add `--legacy`:
-```sh
-forge script script/deploy/DeployConstellation.s.sol:DeployConstellation -f constellation --broadcast --legacy --sender $SENDER_ADDRESS
-```
-
-## Acknowledgements
-* [**Solmate**](https://github.com/transmissions11/solmate)
-* [**Art Gobblers**](https://github.com/artgobblers/art-gobblers)
-* [**Foundry Canary**](https://github.com/ZeframLou/foundry-canary)
-* [**Shields**](https://shields.build)
+Novel curta puzzles will continue to be released. As a result, anyone is encouraged to contribute any new puzzles and their deploy scripts to this repository to save time for anyone else wanting to play past curta puzzles.
