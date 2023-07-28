@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {DeployPuzzleBase} from "./DeployPuzzleBase.s.sol";
+import "./DeployPuzzleBase.s.sol";
 import {MiniMutant} from "@/contracts/puzzles/puzzle-07/MiniMutant.sol";
 
 /// @notice A script to deploy puzzle instances in Solidity. 
 /// To deploy puzzles written in Huff, please see DeployHuffPuzzle.s.sol
-contract DeployPuzzle7 is Script {
+contract DeployPuzzle7 is DeployPuzzleBase {
 
-    MinitMutant public miniMutant;
+    MiniMutant public miniMutant;
     
     function run() public {
 

@@ -5,6 +5,7 @@ import { Script } from "forge-std/Script.sol";
 import { console } from "forge-std/Test.sol";
 
 import { ICurta } from "@/contracts/interfaces/ICurta.sol";
+import { IPuzzle } from "@/contracts/interfaces/IPuzzle.sol";
 
 contract DeployPuzzleBase is Script {
     // replace this with the curta address from DeployFork.s.sol

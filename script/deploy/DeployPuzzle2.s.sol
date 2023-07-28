@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import { DeployPuzzleBase } from "./DeployPuzzleBase.s.sol";
+import "./DeployPuzzleBase.s.sol";
 import { F1A9 } from "@/contracts/puzzles/puzzle-02/F1A9.sol";
 
 /// @notice A script to deploy puzzle instances in Solidity. 
 /// To deploy puzzles written in Huff, please see DeployHuffPuzzle.s.sol
-contract DeployPuzzle2 is Script {
+contract DeployPuzzle2 is DeployPuzzleBase {
 
     F1A9 public f1A9;
 

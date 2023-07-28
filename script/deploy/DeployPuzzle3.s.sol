@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {DeployPuzzleBase} from "./DeployPuzzleBase.s.sol";
+import "./DeployPuzzleBase.s.sol";
 import {TinySig} from "@/contracts/puzzles/puzzle-03/TinySig.sol";
 
 /// @notice A script to deploy puzzle instances in Solidity. 
 /// To deploy puzzles written in Huff, please see DeployHuffPuzzle.s.sol
-contract DeployPuzzle3 is Script {
+contract DeployPuzzle3 is DeployPuzzleBase {
 
     TinySig public tinySig;
     
