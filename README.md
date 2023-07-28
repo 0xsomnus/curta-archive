@@ -12,6 +12,7 @@ It is designed to be used on a local mainnet fork and all the modifications to t
 |          | Removed Phase 3 submission reverts                     | Redundant, the point of this suite is to enable players to solve puzzles without worrying about time constraints. Removing the reverts enables users to simultaneously deploy puzzles of their choosing without worry of time for either over sequentially deploying each puzzle |
 | Multiple contracts | Added past puzzles and deploy scripts | See description of codebase |
 | foundry.toml | Added auto_detect_solc | Though this is against best practice, this flag was set since a few puzzles are compiled with higher solc versions |
+| README.md | Added new README and renamed protocol README | The additions made require their own setup instructions along with a change log. If anyone needs to reference the protocol README. It's under the name ProtocolREADME.md |
 
 ## Setup
 
