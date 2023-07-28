@@ -2,8 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "@/contracts/puzzles/puzzle-11/Verifier.sol";
+import {IPuzzle} from "@/contracts/interfaces/IPuzzle.sol";
 
-contract BabyItsMe is Verifier {
+contract BabyItsMe is Verifier, IPuzzle {
     // This is the BabyJubjub public key A = (x, y) we want to impersonate.
     uint256 constant PK_X = 4342719913949491028786768530115087822524712248835451589697801404893164183326;
     uint256 constant PK_Y = 4826523245007015323400664741523384119579596407052839571721035538011798951543;
@@ -36,5 +37,9 @@ contract BabyItsMe is Verifier {
     // We remove the 3 LSB to make the number fit in the used prime field.
     function generate(address _who) public pure returns (uint256) {
         return uint256(keccak256(abi.encode("Baby it's me, ", _who))) >> 3;
+    }
+
+    function name() external pure returns (string memory) {
+        return "Baby it's me";
     }
 }

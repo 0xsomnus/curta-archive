@@ -8,7 +8,7 @@ contract DeployFork is DeployBase {
 
     /// @notice The address to transfer the ownership of the Authorship Token
     /// to.
-    /// @dev switch this with the address you plan to use or impersonate the one below with `vm.prank`
+    /// @dev switch this with the address you plan to use.
     address constant AUTHORSHIP_TOKEN_OWNER = 0xA85572Cd96f1643458f17340b6f0D6549Af482F5;
 
     /// @notice The address to transfer the ownership of Curta to.

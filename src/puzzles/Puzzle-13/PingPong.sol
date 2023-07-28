@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {IPuzzle} from "@/contracts/interfaces/IPuzzle.sol";
+
 interface IStarknetCore {
     function consumeMessageFromL2(uint256, uint256[] calldata)
         external
@@ -30,7 +32,7 @@ interface IStarknetCore {
 
 /// @title PingPong
 /// @author exp.table
-contract PingPong {
+contract PingPong is IPuzzle {
 
     IStarknetCore constant starknetCore = IStarknetCore(0xc662c410C0ECf747543f5bA90660f6ABeBD9C8c4);
     uint256 constant pong = 0x012d8ab4947254afb512883d7d768d17436c9057a1ae21e53389603266c397f7;
