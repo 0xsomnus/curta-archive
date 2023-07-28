@@ -40,8 +40,8 @@ this already deployed instance through the `vm.prank()` and `vm.warp()`(can also
 
     `$ forge script script/deploy/DeployFork.s.sol:DeployFork`
 
-Deploy the curta puzzle instances. Run `DeployPuzzleFork.s.sol` to deploy them all simultaneously or run the scripts individually depending on your preference. Since the time limits and ether requirements for solving a puzzle are removed, deploying them simultaneously has no drawbacks.
+Deploy the curta puzzle instances. Run `deploy_puzzles.bash` to deploy them all simultaneously or run the scripts individually depending on your preference. Since the time limits and ether requirements for solving a puzzle are removed, deploying them simultaneously has no drawbacks.
 
 ## Contributing
 
-Novel curta puzzles will continue to be released. As a result, anyone is encouraged to contribute any new puzzles and their deploy scripts to this repository to save time for anyone else wanting to play past curta puzzles.
+Novel curta puzzles will continue to be released. As a result, anyone is encouraged to contribute any new puzzles and their deploy scripts to this repository to save time for anyone else wanting to play past curta puzzles. Additionally, the suite is a bit hacky regarding the puzzles and their deploy scripts despite functionality remaining consistent with their mainnet instances. If the authors have any nitpicks or improvements, please open a PR.
